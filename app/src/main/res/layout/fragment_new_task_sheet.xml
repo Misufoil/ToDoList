@@ -20,17 +20,18 @@
 <!--            app:menu="@menu/app_bar_new_task_menu" />-->
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/topAppBarNewTask"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:elevation="0dp">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/topAppBarNewTask"
+                android:id="@+id/topMaterialToolbarNewTask"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:accessibilityLiveRegion="none"
                 app:menu="@menu/app_bar_new_task_menu"
-                app:navigationIcon="@drawable/ic_baseline_close_24">
+                app:navigationIcon="@drawable/ic_baseline_close_24"/>
 
 <!--                <TextView-->
 <!--                    android:layout_width="wrap_content"-->
@@ -52,9 +53,6 @@
 <!--                    android:textStyle="bold"-->
 <!--                    android:textSize="15sp"-->
 <!--                    style="?android:attr/borderlessButtonStyle"/>-->
-
-
-            </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -99,7 +97,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginBottom="20dp"
                 app:hintEnabled="false"
@@ -158,6 +156,7 @@
                     android:text="@string/deadline"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     style="@style/SimpleText"/>
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
