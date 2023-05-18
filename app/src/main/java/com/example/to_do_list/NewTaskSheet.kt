@@ -9,7 +9,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
 import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ArrayAdapter
 import android.widget.RelativeLayout
@@ -25,42 +28,112 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.to_do_list.databinding.FragmentNewTaskSheetBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.datepicker.MaterialDatePicker
+import model.Importance
+import model.TodoItem
+import model.TodoItemsRepository
+import model.toImportance
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class NewTaskSheet : AppCompatActivity() {
+    private var isEditMode = false
     private lateinit var binding: FragmentNewTaskSheetBinding
-    private lateinit var taskViewModel: TaskViewModel
+    private lateinit var todoItem: TodoItem
+    private var localDateDeadline: LocalDate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentNewTaskSheetBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
+//        taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
 
         val spinner: Spinner = binding.spinImportance
-        val myStringArray = resources.getStringArray(R.array.priorities)
-
-        addElevationOnScroll(binding.nestedScrollView, binding.topAppBarNewTask)
-
+        val importanceList = Importance.values().map { it.text }
+//        val myStringArray = resources.getStringArray(importanceList)
         val adapter =
-            CustomArrayAdapter(this, android.R.layout.simple_spinner_item, myStringArray, 2)
+            CustomArrayAdapter(this, android.R.layout.simple_spinner_item, importanceList, 2)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.setSelection(0)
-        spinner.adapter = adapter
+
+        val todoId = intent.getStringExtra("todoId")
+        if (todoId != ""){
+            // Редактирование существующего дела
+            isEditMode = true
+            val uuid = UUID.fromString(todoId)
+            todoItem = TodoItemsRepository.getTodoItemsById(uuid)!!
+
+            binding.editDesc.setText(todoItem.desc)
+            binding.deadlineTextView.text = todoItem.deadline
+            spinner.setSelection(todoItem.priority.ordinal)
+        } else {
+            spinner.setSelection(0)
+        }
 
         binding.topMaterialToolbarNewTask.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_save -> saveAction()
+
                 else -> false
             }
         }
+        spinner.adapter = adapter
+        addElevationOnScroll(binding.nestedScrollView, binding.topAppBarNewTask)
+
+        binding.setDeadline.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked) {
+                showDatePicker()
+            } else {
+                hideDatePicker()
+            }
+        }
+
+        binding.deleteButton.setOnClickListener {
+            clearAllField()
+        }
+
+        binding.topMaterialToolbarNewTask.setNavigationOnClickListener{
+            finish()
+        }
+
+    }
+
+    private fun clearAllField() {
+        with(binding) {
+            editDesc.setText("")
+            setDeadline.isChecked = false
+            spinImportance.setSelection(0)
+            deadlineTextView.text = ""
+        }
+    }
+
+    private fun showDatePicker() {
+        val builder = MaterialDatePicker.Builder.datePicker()
+            .setTheme(R.style.CustomMaterialDatePickerStyle)
+
+        val datePicker = builder.build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+           val calendar =  Calendar.getInstance()
+            calendar.timeInMillis = selection
+
+            val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+            binding.deadlineTextView.text = dateFormat.format(calendar.time)
+        }
+
+        datePicker.show(supportFragmentManager, "DatePickerDialog")
+    }
+
+    private fun hideDatePicker() {
+        binding.deadlineTextView.text = ""
     }
 
     class CustomArrayAdapter(
         context: Context,
         resource: Int,
-        objects: Array<String>,
+        objects: List<String>,
         private val selectedPosition: Int
     ) : ArrayAdapter<String>(context, resource, objects) {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -89,14 +162,41 @@ class NewTaskSheet : AppCompatActivity() {
     }
 
     private fun saveAction(): Boolean {
+//        val dateString: String = binding.deadlineTextView.text.toString()
+//        if(dateString != "") {
+//            val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.getDefault())
+//            localDateDeadline = LocalDate.parse(dateString, dateFormatter)
+//        }
+
+        todoItem = TodoItem(
+            desc = binding.editDesc.text.toString(),
+            priority = binding.spinImportance.selectedItem.toString().toImportance(),
+            deadline = binding.deadlineTextView.text.toString(),
+            modifiedDate = LocalDate.now()
+        )
+
+//        if (isEditMode) {
+//            val returnIntent = Intent()
+//            returnIntent.putExtra(MainActivity.TODO_ITEM_KEY, todoItem)
+//            setResult(Activity.RESULT_OK, returnIntent)
+//        } else {
+//            TodoItemsRepository.addTodoItem(todoItem)
+//        }
+
         val returnIntent = Intent()
-        returnIntent.putExtra("text", binding.editDesc.text.toString())
+        returnIntent.putExtra(MainActivity.TODO_ITEM_KEY, todoItem)
         setResult(Activity.RESULT_OK, returnIntent)
-        taskViewModel.desc.value = binding.editDesc.text.toString()
-        binding.editDesc.setText("")
+//        taskViewModel.desc.value = binding.editDesc.text.toString()
         finish()
         return true
     }
+
+//    private fun getCurrentDate(): String {
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+//        return dateFormat.format(Date())
+//    }
+
+
 
     private fun addElevationOnScroll(
         nestedScrollView: NestedScrollView,

@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/milk">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/AppBarLayout"
@@ -48,43 +49,55 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/milk">
+        android:background="@drawable/recycler_view_bg_rounded"
+        android:clipToPadding="false"
+        android:elevation="3dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginStart="7dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@color/white"
-            android:elevation="10dp">
+<!--    <androidx.core.widget.NestedScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+<!--        android:background="@color/milk">-->
 
-
-            <TextView
-                android:id="@+id/taskName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Task Name: "
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_margin="20dp"
-                android:gravity="center"/>
-
-            <TextView
-                android:id="@+id/taskDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Task Desc: "
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_margin="20dp"
-                android:gravity="center"/>
-
-        </LinearLayout>
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:orientation="vertical"-->
+<!--            android:background="@color/white"-->
+<!--            android:elevation="10dp">-->
 
 
+<!--            <TextView-->
+<!--                android:id="@+id/taskName"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Task Name: "-->
+<!--                style="@style/TextAppearance.AppCompat.Title"-->
+<!--                android:layout_margin="20dp"-->
+<!--                android:gravity="center"/>-->
 
-    </androidx.core.widget.NestedScrollView>
+<!--            <TextView-->
+<!--                android:id="@+id/taskDesc"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Task Desc: "-->
+<!--                style="@style/TextAppearance.AppCompat.Title"-->
+<!--                android:layout_margin="20dp"-->
+<!--                android:gravity="center"/>-->
+
+<!--        </LinearLayout>-->
+
+
+
+<!--    </androidx.core.widget.NestedScrollView>-->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/newTaskButton"
@@ -94,6 +107,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="40dp"
         android:padding="5dp"
+        android:elevation="8dp"
         android:backgroundTint="@color/blue"
         android:src="@drawable/ic_baseline_add_24"/>
 

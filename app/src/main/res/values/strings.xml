@@ -11,9 +11,9 @@
     <string name="deadline">Сделать до</string>
 
 
-    <string-array name="priorities">
-        <item>Нет</item>
-        <item>Низкий</item>
-        <item>Высокий!!</item>
-    </string-array>
+<!--    <string-array name="priorities">-->
+<!--        <item>Нет</item>-->
+<!--        <item>Низкий</item>-->
+<!--        <item>Высокий!!</item>-->
+<!--    </string-array>-->
 </resources>
