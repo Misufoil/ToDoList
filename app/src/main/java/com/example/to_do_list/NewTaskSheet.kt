@@ -25,6 +25,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.to_do_list.MainActivity.Companion.TODO_ITEM_KEY
 import com.example.to_do_list.databinding.FragmentNewTaskSheetBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
@@ -58,7 +59,7 @@ class NewTaskSheet : AppCompatActivity() {
             CustomArrayAdapter(this, android.R.layout.simple_spinner_item, importanceList, 2)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        val todoId = intent.getStringExtra("todoId")
+        val todoId = intent.getStringExtra(TODO_ITEM_KEY)
         if (todoId != ""){
             // Редактирование существующего дела
             isEditMode = true
@@ -67,7 +68,7 @@ class NewTaskSheet : AppCompatActivity() {
 
             binding.editDesc.setText(todoItem.desc)
             binding.deadlineTextView.text = todoItem.deadline
-            spinner.setSelection(todoItem.priority.ordinal)
+            binding.spinImportance.setSelection(todoItem.priority.ordinal)
         } else {
             spinner.setSelection(0)
         }
@@ -168,12 +169,23 @@ class NewTaskSheet : AppCompatActivity() {
 //            localDateDeadline = LocalDate.parse(dateString, dateFormatter)
 //        }
 
-        todoItem = TodoItem(
-            desc = binding.editDesc.text.toString(),
-            priority = binding.spinImportance.selectedItem.toString().toImportance(),
-            deadline = binding.deadlineTextView.text.toString(),
-            modifiedDate = LocalDate.now()
-        )
+        if (isEditMode) {
+            todoItem.apply {
+                desc = binding.editDesc.text.toString()
+                priority = binding.spinImportance.selectedItem.toString().toImportance()
+                deadline = binding.deadlineTextView.text.toString()
+                modifiedDate = LocalDate.now()
+            }
+        } else {
+            todoItem = TodoItem(
+                desc = binding.editDesc.text.toString(),
+                priority = binding.spinImportance.selectedItem.toString().toImportance(),
+                deadline = binding.deadlineTextView.text.toString(),
+                modifiedDate = LocalDate.now()
+            )
+        }
+
+
 
 //        if (isEditMode) {
 //            val returnIntent = Intent()
@@ -184,7 +196,7 @@ class NewTaskSheet : AppCompatActivity() {
 //        }
 
         val returnIntent = Intent()
-        returnIntent.putExtra(MainActivity.TODO_ITEM_KEY, todoItem)
+        returnIntent.putExtra(TODO_ITEM_KEY, todoItem)
         setResult(Activity.RESULT_OK, returnIntent)
 //        taskViewModel.desc.value = binding.editDesc.text.toString()
         finish()
