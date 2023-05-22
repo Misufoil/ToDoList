@@ -5,7 +5,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="save">СОХРАНИТЬ</string>
-    <string name="done">Выполнено-</string>
+    <string name="done">Выполнено - %1$d</string>
     <string name="what_need_to_do">Что надо сделать...</string>
     <string name="importance">Важность</string>
     <string name="deadline">Сделать до</string>

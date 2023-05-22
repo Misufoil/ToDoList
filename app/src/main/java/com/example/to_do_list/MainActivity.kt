@@ -4,12 +4,22 @@ import android.app.Activity
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.to_do_list.databinding.ActivityMainBinding
@@ -18,11 +28,10 @@ import model.TodoItem
 import model.TodoItemsRepository
 
 
-
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var taskViewModel: TaskViewModel
-    private val adapter = TaskAdapter()
+    private lateinit var taskAdapter: TaskAdapter
     var newTaskLauncher = registerNewTaskLauncher()
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -30,13 +39,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setCompletedText()
+
         init()
 
-        taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
+//        taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
         sharedPreferences = getSharedPreferences("TodoItems", MODE_PRIVATE)
+        loadTodoItems()
 
         binding.newTaskButton.setOnClickListener {
             val intent = Intent(this, NewTaskSheet::class.java)
@@ -63,15 +74,121 @@ class MainActivity : AppCompatActivity() {
 
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                handleScroll(recyclerView, dx, dy)
+                handleScroll(recyclerView, dy)
             }
         })
 
-        loadTodoItems()
+        val swipeCallBack = object : SwipeCallBack() {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                if(direction == ItemTouchHelper.LEFT) {
+                    TodoItemsRepository.deleteTodoItem(position)
+                    binding.recyclerView.adapter?.notifyItemRemoved(position)
+                } else if (direction == ItemTouchHelper.RIGHT) {
+                    TodoItemsRepository.itIsDone(position)
+                    setCompletedText()
+                    taskAdapter.notifyItemChanged(position)
+                }
+                saveTodoItems()
+            }
 
+            private val leftBackground  = ColorDrawable(resources.getColor(R.color.red))
+            private val rightBackground = ColorDrawable(resources.getColor(R.color.green))
+            private val intrinsicWidth = 0
+            private val intrinsicHeight = 0
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+                val itemHeight = itemView.bottom - itemView.top
+
+                when {
+                    dX > 0 -> {
+                        rightBackground.setBounds(
+                            itemView.left,
+                            itemView.top,
+                            itemView.left + dX.toInt(),
+                            itemView.bottom
+                        )
+                        rightBackground.draw(c)
+                    }
+                    dX < 0 -> {
+                        leftBackground.setBounds(
+                            itemView.right + dX.toInt(),
+                            itemView.top,
+                            itemView.right,
+                            itemView.bottom
+                        )
+                        leftBackground.draw(c)
+                    }
+                    else -> {
+                        leftBackground.setBounds(0, 0, 0, 0)
+                        rightBackground.setBounds(0, 0, 0, 0)
+                    }
+                }
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+
+            override fun onChildDrawOver(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder?,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder?.itemView
+
+                if (itemView != null) {
+                    when {
+                        dX > 0 -> {
+                            rightBackground.setBounds(
+                                itemView.left,
+                                itemView.top,
+                                itemView.left + dX.toInt(),
+                                itemView.bottom
+                            )
+                            rightBackground.draw(c)
+                        }
+                        dX < 0 -> {
+                            leftBackground.setBounds(
+                                itemView.right + dX.toInt(),
+                                itemView.top,
+                                itemView.right,
+                                itemView.bottom
+                            )
+                            leftBackground.draw(c)
+                        }
+                        else -> {
+                            leftBackground.setBounds(0, 0, 0, 0)
+                            rightBackground.setBounds(0, 0, 0, 0)
+                        }
+                    }
+                }
+
+                super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+
+        }
+
+
+        val itemTouchHelper = ItemTouchHelper(swipeCallBack)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }
 
-    private fun handleScroll(recyclerView: RecyclerView, dx: Int, dy: Int) {
+
+
+
+    private fun handleScroll(recyclerView: RecyclerView, dy: Int) {
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
         val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
@@ -92,10 +209,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        binding.apply {
-            recyclerView.adapter = adapter
-            recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
-        }
+        val recyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+        taskAdapter = TaskAdapter()
+        recyclerView.adapter = taskAdapter
     }
 
 
@@ -103,19 +220,20 @@ class MainActivity : AppCompatActivity() {
     private fun registerNewTaskLauncher(): ActivityResultLauncher<Intent> {
         return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val userData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val newItem  = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     result.data?.getParcelableExtra(TODO_ITEM_KEY, TodoItem::class.java)
                 } else {
                     result.data?.getParcelableExtra(TODO_ITEM_KEY)
                 }
-                if (userData != null) {
-                    if (TodoItemsRepository.idInTodoItems(userData.id)) {
-                        TodoItemsRepository.updateTodoItem(userData)
+                if (newItem != null) {
+                    if (TodoItemsRepository.idInTodoItems(newItem.id)) {
+                        TodoItemsRepository.updateTodoItem(newItem)
                     } else {
-                        TodoItemsRepository.addTodoItem(userData)
+                        TodoItemsRepository.addTodoItem(newItem)
                     }
+                    taskAdapter.notifyDataSetChanged()
                 }
-                adapter.notifyDataSetChanged()
+//                adapter.notifyDataSetChanged()
                 saveTodoItems()// Сохранение данных после добавления/обновления задачи
             }
         }
@@ -130,7 +248,7 @@ class MainActivity : AppCompatActivity() {
         val json = sharedPreferences.getString("todo_items", null)
         val todoItems = json?.let { TodoItemsRepository.fromJson(it) } ?: mutableListOf()
         TodoItemsRepository.addAllTodoItems(todoItems)
-        adapter.notifyDataSetChanged()
+        taskAdapter.notifyDataSetChanged()
     }
 
     private fun saveTodoItems() {
@@ -138,11 +256,24 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences.edit().putString("todo_items", json).apply()
     }
 
+    fun setCompletedText() {
+        val completedTodoItemsCount = TodoItemsRepository.getAmountCompletedTodoItems()
+        binding.completedTodoItemsTextView.text = resources.getString(R.string.done, completedTodoItemsCount)
+    }
+
+//    fun addItem(item:TodoItem) {
+//        TodoItemsRepository.addTodoItem(item)
+//        adapter.notifyDataSetChanged()
+//    }
+
+//    fun updateItem(updatedItem: TodoItem) {
+//        val index = TodoItemsRepository.updateTodoItem(updatedItem)
+//        adapter.notifyItemChanged(index)
+//    }
+
+
     companion object {
         const val REQUEST_CODE= 1
         const val TODO_ITEM_KEY = "TODO_ITEM"
     }
-
-
-
 }

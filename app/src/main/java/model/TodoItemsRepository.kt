@@ -10,13 +10,24 @@ object  TodoItemsRepository {
     private var completedTodoItems = 0
     private val gson = Gson()
 
-    fun getAllTodoItems(): List<TodoItem> {
+    fun itIsDone(position: Int) {
+        todoItems[position].isDone = true
+        completedTodoItems++
+    }
+    fun getAmountCompletedTodoItems():Int {
+        return completedTodoItems
+    }
+
+    fun getAllTodoItems(): MutableList<TodoItem> {
         return todoItems
     }
 
     fun addAllTodoItems(items: List<TodoItem>) {
         todoItems.clear()
         todoItems.addAll(items)
+    }
+    fun deleteTodoItem(position: Int) {
+        todoItems.removeAt(position)
     }
 
     fun getSize(): Int {
@@ -40,11 +51,12 @@ object  TodoItemsRepository {
         todoItems.remove(itemToRemove)
     }
 
-    fun updateTodoItem(todoItem: TodoItem) {
+    fun updateTodoItem(todoItem: TodoItem): Int {
         val index = todoItems.indexOfFirst { it.id == todoItem.id }
         if(index != -1) {
             todoItems[index] = todoItem
         }
+        return index
     }
 
     fun idInTodoItems(id: UUID): Boolean {

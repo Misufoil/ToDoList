@@ -58,6 +58,7 @@ class NewTaskSheet : AppCompatActivity() {
         val adapter =
             CustomArrayAdapter(this, android.R.layout.simple_spinner_item, importanceList, 2)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
 
         val todoId = intent.getStringExtra(TODO_ITEM_KEY)
         if (todoId != ""){
@@ -68,7 +69,8 @@ class NewTaskSheet : AppCompatActivity() {
 
             binding.editDesc.setText(todoItem.desc)
             binding.deadlineTextView.text = todoItem.deadline
-            binding.spinImportance.setSelection(todoItem.priority.ordinal)
+            val selectedPosition = todoItem.priority.ordinal
+            spinner.setSelection(selectedPosition)
         } else {
             spinner.setSelection(0)
         }
@@ -80,7 +82,8 @@ class NewTaskSheet : AppCompatActivity() {
                 else -> false
             }
         }
-        spinner.adapter = adapter
+
+
         addElevationOnScroll(binding.nestedScrollView, binding.topAppBarNewTask)
 
         binding.setDeadline.setOnCheckedChangeListener { _, isChecked ->
