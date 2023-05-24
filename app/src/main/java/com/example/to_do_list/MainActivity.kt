@@ -26,6 +26,7 @@ import com.example.to_do_list.databinding.ActivityMainBinding
 import com.google.gson.reflect.TypeToken
 import model.TodoItem
 import model.TodoItemsRepository
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -180,13 +181,9 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-
         val itemTouchHelper = ItemTouchHelper(swipeCallBack)
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }
-
-
-
 
     private fun handleScroll(recyclerView: RecyclerView, dy: Int) {
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -220,22 +217,30 @@ class MainActivity : AppCompatActivity() {
     private fun registerNewTaskLauncher(): ActivityResultLauncher<Intent> {
         return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val newItem  = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val item  = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     result.data?.getParcelableExtra(TODO_ITEM_KEY, TodoItem::class.java)
                 } else {
                     result.data?.getParcelableExtra(TODO_ITEM_KEY)
                 }
-                if (newItem != null) {
-                    if (TodoItemsRepository.idInTodoItems(newItem.id)) {
-                        TodoItemsRepository.updateTodoItem(newItem)
+                if (item != null) {
+                    if (TodoItemsRepository.idInTodoItems(item.id)) {
+                        TodoItemsRepository.updateTodoItem(item)
                     } else {
-                        TodoItemsRepository.addTodoItem(newItem)
+                        TodoItemsRepository.addTodoItem(item)
                     }
                     taskAdapter.notifyDataSetChanged()
                 }
-//                adapter.notifyDataSetChanged()
-                saveTodoItems()// Сохранение данных после добавления/обновления задачи
+            } else if (result.resultCode == DELETE_RESULT_CODE) {
+                val itemId = result.data?.getStringExtra(TODO_ITEM_ID_KEY)
+                if (itemId != null) {
+                    val deletedItemId = UUID.fromString(itemId)
+                    val position = TodoItemsRepository.getPositionById(deletedItemId)
+                    TodoItemsRepository.deleteTodoItem(position)
+                    binding.recyclerView.adapter?.notifyItemRemoved(position)
+                }
             }
+            saveTodoItems()// Сохранение данных после добавления/обновления задачи
+
         }
     }
 
@@ -274,6 +279,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_CODE= 1
+        const val TODO_ITEM_ID_KEY = "todo_item_id"
+        const val DELETE_RESULT_CODE = 2
         const val TODO_ITEM_KEY = "TODO_ITEM"
     }
 }

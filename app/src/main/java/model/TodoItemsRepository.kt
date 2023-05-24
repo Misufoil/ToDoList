@@ -10,6 +10,15 @@ object  TodoItemsRepository {
     private var completedTodoItems = 0
     private val gson = Gson()
 
+    fun getPositionById(id: UUID): Int {
+        for (index in todoItems.indices) {
+            if (todoItems[index].id == id) {
+                return index
+            }
+        }
+        return -1
+    }
+
     fun itIsDone(position: Int) {
         todoItems[position].isDone = true
         completedTodoItems++

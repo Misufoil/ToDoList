@@ -25,6 +25,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.to_do_list.MainActivity.Companion.DELETE_RESULT_CODE
+import com.example.to_do_list.MainActivity.Companion.TODO_ITEM_ID_KEY
 import com.example.to_do_list.MainActivity.Companion.TODO_ITEM_KEY
 import com.example.to_do_list.databinding.FragmentNewTaskSheetBinding
 import com.google.android.material.appbar.AppBarLayout
@@ -95,7 +97,7 @@ class NewTaskSheet : AppCompatActivity() {
         }
 
         binding.deleteButton.setOnClickListener {
-            clearAllField()
+            deleteItem()
         }
 
         binding.topMaterialToolbarNewTask.setNavigationOnClickListener{
@@ -104,13 +106,22 @@ class NewTaskSheet : AppCompatActivity() {
 
     }
 
-    private fun clearAllField() {
-        with(binding) {
-            editDesc.setText("")
-            setDeadline.isChecked = false
-            spinImportance.setSelection(0)
-            deadlineTextView.text = ""
+    private fun deleteItem() {
+        if(isEditMode) {
+            val itemId = todoItem.id.toString()
+            val returnIntent = Intent()
+            returnIntent.putExtra(TODO_ITEM_ID_KEY, itemId)
+            setResult(DELETE_RESULT_CODE, returnIntent)
         }
+//        with(binding) {
+//            editDesc.setText("")
+//            setDeadline.isChecked = false
+//            spinImportance.setSelection(0)
+//            deadlineTextView.text = ""
+//        }
+
+        finish()
+
     }
 
     private fun showDatePicker() {

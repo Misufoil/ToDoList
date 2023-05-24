@@ -64,9 +64,10 @@ class TodoViewHolder(private val adapter: RecyclerView.Adapter<*>, item: View) :
         }
 
         if (item.isDone) {
+            binding.textView.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.darker_gray))
             binding.textView.paintFlags = binding.textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            binding.checkBox.isChecked = true
 
+            binding.checkBox.isChecked = true
             // Установка зеленого цвета флажка
             val checkBoxColor = ColorStateList.valueOf(
                 ContextCompat.getColor(itemView.context, R.color.green)
@@ -74,6 +75,7 @@ class TodoViewHolder(private val adapter: RecyclerView.Adapter<*>, item: View) :
             CompoundButtonCompat.setButtonTintList(binding.checkBox, checkBoxColor)
         } else {
             binding.textView.paintFlags = binding.textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            binding.textView.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.black))
             binding.checkBox.isChecked = false
 
             // Установка цвета флажка по умолчанию
