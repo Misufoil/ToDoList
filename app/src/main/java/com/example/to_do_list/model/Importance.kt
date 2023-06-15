@@ -1,4 +1,4 @@
-package model
+package com.example.to_do_list.model
 
 enum class Importance(val text: String) {
     NO("Нет"),

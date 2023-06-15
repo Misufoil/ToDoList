@@ -1,11 +1,7 @@
-package model
+package com.example.to_do_list.model
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.activity.result.contract.ActivityResultContracts
-import com.example.to_do_list.MainActivity.Companion.TODO_ITEM_KEY
 import java.time.LocalDate
 import java.util.*
 

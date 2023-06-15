@@ -9,11 +9,4 @@
     <string name="what_need_to_do">Что надо сделать...</string>
     <string name="importance">Важность</string>
     <string name="deadline">Сделать до</string>
-
-
-<!--    <string-array name="priorities">-->
-<!--        <item>Нет</item>-->
-<!--        <item>Низкий</item>-->
-<!--        <item>Высокий!!</item>-->
-<!--    </string-array>-->
 </resources>

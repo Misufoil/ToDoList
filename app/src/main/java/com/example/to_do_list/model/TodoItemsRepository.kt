@@ -1,4 +1,4 @@
-package model
+package com.example.to_do_list.model
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -11,12 +11,19 @@ object  TodoItemsRepository {
     private val gson = Gson()
 
     fun getPositionById(id: UUID): Int {
-        for (index in todoItems.indices) {
-            if (todoItems[index].id == id) {
-                return index
-            }
+        return todoItems.indexOfFirst { it.id == id }
+    }
+
+    fun addOnPosition(toPosition: Int, todoItem: TodoItem) {
+        todoItems.add(toPosition, todoItem)
+        if (todoItem.isDone) {
+            completedTodoItems++
         }
-        return -1
+    }
+
+    fun swap(fromPosition: Int, toPosition: Int) {
+        val element = todoItems.removeAt(fromPosition) // Удаляем элемент из исходной позиции и сохраняем его
+        todoItems.add(toPosition, element)
     }
 
     fun itIsDone(position: Int) {
@@ -31,16 +38,9 @@ object  TodoItemsRepository {
         return todoItems
     }
 
-    fun addAllTodoItems(items: List<TodoItem>) {
-        todoItems.clear()
-        todoItems.addAll(items)
-    }
     fun deleteTodoItem(position: Int) {
         todoItems.removeAt(position)
-    }
-
-    fun getSize(): Int {
-        return todoItems.size
+        completedTodoItems--
     }
 
     fun getTodoItemsById(id: UUID): TodoItem? {
@@ -53,11 +53,6 @@ object  TodoItemsRepository {
 
     fun addTodoItem(todoItem: TodoItem) {
         todoItems.add(todoItem)
-    }
-
-    fun removeTodoItemById(id: UUID) {
-        val itemToRemove = todoItems.find { it.id == id }
-        todoItems.remove(itemToRemove)
     }
 
     fun updateTodoItem(todoItem: TodoItem): Int {
@@ -78,9 +73,16 @@ object  TodoItemsRepository {
         return gson.toJson(todoItems)
     }
 
-    fun fromJson(json: String): List<TodoItem>? {
+    fun fromJson(json: String) {
         val type: Type = object : TypeToken<List<TodoItem>>() {}.type
-        return gson.fromJson(json, type)
+        val todoItemsList: List<TodoItem> = gson.fromJson(json, type)
+
+        todoItems.addAll(todoItemsList)
+        for (todoItem in todoItemsList) {
+            if (todoItem.isDone) {
+                completedTodoItems++
+            }
+        }
     }
 
 }
