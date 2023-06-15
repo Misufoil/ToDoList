@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
-        taskAdapter = TaskAdapter(recyclerView, this, binding.completedTodoItemsTextView)
+        taskAdapter = TaskAdapter(recyclerView, binding.completedTodoItemsTextView)
 
         val callback: ItemTouchHelper.Callback = MyItemTouchHelper(taskAdapter, this)
         val itemTouchHelper: ItemTouchHelper = ItemTouchHelper(callback)

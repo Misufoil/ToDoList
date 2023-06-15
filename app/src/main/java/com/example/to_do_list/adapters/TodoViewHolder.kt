@@ -19,7 +19,6 @@ import com.example.to_do_list.model.Importance
 import com.example.to_do_list.model.TodoItem
 
 class TodoViewHolder(
-    private val adapter: RecyclerView.Adapter<*>,
     item: View,
     private val mTouchHelper: ItemTouchHelper
 ) : RecyclerView.ViewHolder(item),

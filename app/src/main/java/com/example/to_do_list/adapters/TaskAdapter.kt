@@ -19,7 +19,6 @@ import com.google.android.material.snackbar.Snackbar
 
 class TaskAdapter(
     private val recyclerView: RecyclerView,
-    private val context: Context,
     private val completedTodoItemsTextView: TextView
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperAdapter {
     private val todoItems: List<TodoItem> = TodoItemsRepository.getAllTodoItems()
@@ -27,7 +26,7 @@ class TaskAdapter(
     private val VIEW_TYPE_ITEM = 1
     private lateinit var mTouchHelper: ItemTouchHelper
     private var sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("TodoItems", MODE_PRIVATE)
+        completedTodoItemsTextView.context.getSharedPreferences("TodoItems", MODE_PRIVATE)
     private lateinit var deleteItem: TodoItem
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -40,7 +39,7 @@ class TaskAdapter(
             VIEW_TYPE_ITEM -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.task_item_cell, parent, false)
-                TodoViewHolder(this, view, mTouchHelper)
+                TodoViewHolder( view, mTouchHelper)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -118,7 +117,7 @@ class TaskAdapter(
     private fun setCompletedText() {
         val completedTodoItemsCount = TodoItemsRepository.getAmountCompletedTodoItems()
         completedTodoItemsTextView.text =
-            context.resources.getString(R.string.done, completedTodoItemsCount)
+            completedTodoItemsTextView.context.resources.getString(R.string.done, completedTodoItemsCount)
     }
 
     private fun saveTodoItems() {
