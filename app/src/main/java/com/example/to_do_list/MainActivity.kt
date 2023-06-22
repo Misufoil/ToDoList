@@ -3,8 +3,6 @@ package com.example.to_do_list
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Canvas
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,29 +23,33 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var taskAdapter: TaskAdapter
     var newTaskLauncher = registerNewTaskLauncher()
-    private lateinit var sharedPreferences: SharedPreferences
+    private var sharedPreferences: SharedPreferences = getSharedPreferences("TodoItems", MODE_PRIVATE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setCompletedText()
-        init()
 
-        sharedPreferences = getSharedPreferences("TodoItems", MODE_PRIVATE)
+        setupView()
+        setupListeners()
+        initRecyclerView()
         loadTodoItems()
+        updateCompletedText()
+    }
 
+    private fun setupView() {
         binding.newTaskButton.setOnClickListener {
+            val newTask: TodoItem? = null
             val intent = Intent(this, NewTaskSheet::class.java)
-            intent.putExtra(TODO_ITEM_KEY, "")
+            intent.putExtra(TODO_ITEM_KEY, newTask)
             newTaskLauncher.launch(intent)
         }
 
-        var iconState = true
+        var isIconVisible  = true
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.app_bar_visibility -> {
-                    iconState = if (iconState) {
+                    isIconVisible  = if (isIconVisible ) {
                         menuItem.setIcon(R.drawable.ic_baseline_visibility_off_24)
                         false
                     } else {
@@ -59,15 +61,17 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
 
+    private fun setupListeners() {
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                handleScroll(recyclerView, dy)
+                handleRecyclerViewScroll(recyclerView, dy)
             }
         })
     }
 
-    private fun handleScroll(recyclerView: RecyclerView, dy: Int) {
+    private fun handleRecyclerViewScroll(recyclerView: RecyclerView, dy: Int) {
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
         val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
@@ -87,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun init() {
+    private fun initRecyclerView() {
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         taskAdapter = TaskAdapter(recyclerView, binding.completedTodoItemsTextView)
@@ -100,7 +104,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = taskAdapter
     }
 
-
     private fun registerNewTaskLauncher(): ActivityResultLauncher<Intent> {
         return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -110,20 +113,18 @@ class MainActivity : AppCompatActivity() {
                     result.data?.getParcelableExtra(TODO_ITEM_KEY)
                 }
                 if (item != null) {
-                    if (TodoItemsRepository.idInTodoItems(item.id)) {
-                        TodoItemsRepository.updateTodoItem(item)
+                    if (taskAdapter.idInTodoItems(item.id)) {
+                        taskAdapter.updateTodoItem(item)
                     } else {
-                        TodoItemsRepository.addTodoItem(item)
+                        taskAdapter.addTodoItem(item)
                     }
-                    taskAdapter.notifyDataSetChanged()
                 }
             } else if (result.resultCode == DELETE_RESULT_CODE) {
                 val itemId = result.data?.getStringExtra(TODO_ITEM_ID_KEY)
                 if (itemId != null) {
                     val deletedItemId = UUID.fromString(itemId)
-                    val position = TodoItemsRepository.getPositionById(deletedItemId)
-                    TodoItemsRepository.deleteTodoItem(position)
-                    binding.recyclerView.adapter?.notifyItemRemoved(position)
+                    val position = taskAdapter.getPositionById(deletedItemId)
+                    taskAdapter.deleteTodoItem(position)
                 }
             }
             saveTodoItems()// Сохранение данных после добавления/обновления задачи
@@ -131,33 +132,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        saveTodoItems()
-        super.onDestroy()
-    }
-
     private fun loadTodoItems() {
         val json = sharedPreferences.getString("todo_items", null)
         if (json != null) {
             TodoItemsRepository.fromJson(json)
         }
-        setCompletedText()
-        taskAdapter.notifyDataSetChanged()
+        taskAdapter.setData(TodoItemsRepository.getAllTodoItems(), TodoItemsRepository.getAmountCompletedTodoItems())
     }
 
-    private fun saveTodoItems() {
-        val json = TodoItemsRepository.toJson()
-        sharedPreferences.edit().putString("todo_items", json).apply()
-    }
-
-    private fun setCompletedText() {
-        val completedTodoItemsCount = TodoItemsRepository.getAmountCompletedTodoItems()
+    private fun updateCompletedText() {
+        val completedTodoItemsCount = taskAdapter.getAmountCompletedTodoItems()
         binding.completedTodoItemsTextView.text =
             resources.getString(R.string.done, completedTodoItemsCount)
     }
 
+    private fun saveTodoItems() {
+        TodoItemsRepository.updateTodoItems(taskAdapter.getAllTodoItems())
+        val json = TodoItemsRepository.toJson()
+        sharedPreferences.edit().putString("todo_items", json).apply()
+    }
+
+    override fun onDestroy() {
+        saveTodoItems()
+        super.onDestroy()
+    }
+
     companion object {
-        const val REQUEST_CODE = 1
         const val TODO_ITEM_ID_KEY = "todo_item_id"
         const val DELETE_RESULT_CODE = 2
         const val TODO_ITEM_KEY = "TODO_ITEM"

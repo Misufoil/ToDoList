@@ -22,7 +22,6 @@ import com.example.to_do_list.model.Importance
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.example.to_do_list.model.TodoItem
-import com.example.to_do_list.model.TodoItemsRepository
 import com.example.to_do_list.model.toImportance
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -46,12 +45,16 @@ class NewTaskSheet : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
-        val todoId = intent.getStringExtra(TODO_ITEM_KEY)
-        if (todoId != "") {
+        val receivedItem: TodoItem? = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(TODO_ITEM_KEY, TodoItem::class.java)
+        } else {
+            intent.getParcelableExtra<TodoItem>(TODO_ITEM_KEY)
+        }
+
+        if (receivedItem != null) {
             // Редактирование существующего дела
             isEditMode = true
-            val uuid = UUID.fromString(todoId)
-            todoItem = TodoItemsRepository.getTodoItemsById(uuid)!!
+            todoItem = receivedItem
 
             binding.editDesc.setText(todoItem.desc)
             binding.deadlineTextView.text = todoItem.deadline
@@ -86,7 +89,6 @@ class NewTaskSheet : AppCompatActivity() {
         binding.topMaterialToolbarNewTask.setNavigationOnClickListener {
             finish()
         }
-
     }
 
     private fun deleteItem() {

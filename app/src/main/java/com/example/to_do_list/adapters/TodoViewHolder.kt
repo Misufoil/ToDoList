@@ -1,6 +1,7 @@
 package com.example.to_do_list.adapters
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Paint
@@ -17,6 +18,7 @@ import com.example.to_do_list.R
 import com.example.to_do_list.databinding.TaskItemCellBinding
 import com.example.to_do_list.model.Importance
 import com.example.to_do_list.model.TodoItem
+import java.time.LocalDate
 
 class TodoViewHolder(
     item: View,
@@ -26,66 +28,58 @@ class TodoViewHolder(
     GestureDetector.OnGestureListener {
     private val binding = TaskItemCellBinding.bind(item)
     private var mGestureDetector: GestureDetector = GestureDetector(itemView.context, this)
-    private lateinit var item: TodoItem
+    private lateinit var todoItem: TodoItem
 
 
     fun bind(item: TodoItem) {
         itemView.setOnTouchListener(this)
         binding.textView.text = item.desc
         binding.deadlineTextView.text = item.deadline
-        this.item = item
+        this.todoItem = item
 
         when (item.priority) {
             Importance.HIGH -> {
                 binding.priorityImage.visibility = View.VISIBLE
                 binding.priorityImage.setImageResource(R.drawable.ic_baseline_priority_high_24)
-                val checkBoxColor =
-                    ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.red))
-                // Установка цвета флажка
-                CompoundButtonCompat.setButtonTintList(binding.checkBox, checkBoxColor)
+                setCheckBoxColor(ContextCompat.getColor(itemView.context, R.color.red))
             }
             Importance.LOW -> {
                 binding.priorityImage.visibility = View.VISIBLE
                 binding.priorityImage.setImageResource(R.drawable.ic_baseline_south_24)
-                val checkBoxColor =
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            itemView.context,
-                            R.color.light_gray
-                        )
-                    )
-                // Установка цвета флажка
-                CompoundButtonCompat.setButtonTintList(binding.checkBox, checkBoxColor)
+                setCheckBoxColor(ContextCompat.getColor(itemView.context, R.color.light_gray))
             }
             else -> {
                 binding.priorityImage.visibility = View.GONE
-                val checkBoxColor =
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            itemView.context,
-                            R.color.light_gray
-                        )
-                    )
-                // Установка цвета флажка
-                CompoundButtonCompat.setButtonTintList(binding.checkBox, checkBoxColor)
+                setCheckBoxColor(ContextCompat.getColor(itemView.context, R.color.light_gray))
             }
         }
 
         if (item.isDone) {
+            setStrikeThroughText(true)
+            setCheckBoxColor(ContextCompat.getColor(itemView.context, R.color.green))
+            binding.checkBox.isChecked = true
+
+        } else {
+            setStrikeThroughText(false)
+            binding.checkBox.isChecked = false
+        }
+    }
+
+    private fun setCheckBoxColor(color: Int) {
+        val checkBoxColor = ColorStateList.valueOf(color)
+        CompoundButtonCompat.setButtonTintList(binding.checkBox, checkBoxColor)
+    }
+
+    private fun setStrikeThroughText(isStrikeThrough: Boolean) {
+        if (isStrikeThrough) {
+            binding.textView.paintFlags =
+                binding.textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             binding.textView.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
                     android.R.color.darker_gray
                 )
             )
-            binding.textView.paintFlags = binding.textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-
-            binding.checkBox.isChecked = true
-            // Установка зеленого цвета флажка
-            val checkBoxColor = ColorStateList.valueOf(
-                ContextCompat.getColor(itemView.context, R.color.green)
-            )
-            CompoundButtonCompat.setButtonTintList(binding.checkBox, checkBoxColor)
         } else {
             binding.textView.paintFlags =
                 binding.textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
@@ -95,13 +89,15 @@ class TodoViewHolder(
                     android.R.color.black
                 )
             )
-            binding.checkBox.isChecked = false
         }
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if (event != null) {
             mGestureDetector.onTouchEvent(event)
+//            if (event.action == MotionEvent.ACTION_UP && !mGestureDetector.onTouchEvent(event)) {
+//                v?.performClick()
+//            }
         }
         return true
     }
@@ -115,14 +111,22 @@ class TodoViewHolder(
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
         val context = itemView.context
-        val intent = Intent(context, NewTaskSheet::class.java)
-        val todoItemId = item.id.toString()
-        intent.putExtra(MainActivity.TODO_ITEM_KEY, todoItemId)
-        val activity = context as Activity
+        val intent = createIntent(context, todoItem)
+        launchActivity(context, intent)
+        return true
+    }
 
+    private fun createIntent(context: Context, todoItem: TodoItem): Intent {
+        val intent = Intent(context, NewTaskSheet::class.java)
+        todoItem.modifiedDate = LocalDate.now()
+        intent.putExtra(MainActivity.TODO_ITEM_KEY, todoItem)
+        return intent
+    }
+
+    private fun launchActivity(context: Context, intent: Intent) {
+        val activity = context as Activity
         val newTaskLauncher = (activity as MainActivity).newTaskLauncher
         newTaskLauncher.launch(intent)
-        return true
     }
 
     override fun onScroll(

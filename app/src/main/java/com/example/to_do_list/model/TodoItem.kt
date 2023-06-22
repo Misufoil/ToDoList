@@ -21,7 +21,7 @@ data class TodoItem (
         parcel.readString(),
         parcel.readByte() != 0.toByte(),
         LocalDate.ofEpochDay(parcel.readLong()),
-        parcel.readValue(LocalDate::class.java.classLoader) as LocalDate?
+        parcel.readString()?.let { LocalDate.parse(it) }
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -31,7 +31,7 @@ data class TodoItem (
         parcel.writeString(deadline)
         parcel.writeByte(if (isDone) 1 else 0)
         parcel.writeLong(createdAt.toEpochDay())
-        parcel.writeValue(modifiedDate)
+        parcel.writeString(modifiedDate?.toString())
     }
 
     override fun describeContents(): Int {
