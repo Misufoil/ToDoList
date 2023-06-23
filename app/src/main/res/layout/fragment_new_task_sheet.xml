@@ -126,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/importance"
                 android:layout_marginStart="15dp"
-                style="@style/SimpleText"/>
+                style="@style/MyBodyText"/>
 
             <Spinner
                 android:id="@+id/spinImportance"
@@ -158,7 +158,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="@id/deadlineTextView"
-                    style="@style/SimpleText"/>
+                    style="@style/MyBodyText"/>
 
                 <TextView
                     android:id="@+id/deadlineTextView"

@@ -23,12 +23,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var taskAdapter: TaskAdapter
     var newTaskLauncher = registerNewTaskLauncher()
-    private var sharedPreferences: SharedPreferences = getSharedPreferences("TodoItems", MODE_PRIVATE)
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        sharedPreferences = getSharedPreferences("TodoItems", MODE_PRIVATE)
 
         setupView()
         setupListeners()

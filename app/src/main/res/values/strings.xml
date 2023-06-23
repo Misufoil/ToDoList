@@ -9,4 +9,5 @@
     <string name="what_need_to_do">Что надо сделать...</string>
     <string name="importance">Важность</string>
     <string name="deadline">Сделать до</string>
+    <string name="addTask">Добавить дело</string>
 </resources>
