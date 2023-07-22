@@ -82,10 +82,10 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/milk"
         app:layout_anchor="@+id/nestedScrollView"
         app:layout_anchorGravity="center"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+<!--        android:background="@color/milk"-->
 
 
         <LinearLayout
@@ -101,8 +101,7 @@
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginBottom="20dp"
                 app:hintEnabled="false"
-                android:elevation="3dp"
-                android:background="@drawable/my_text_input_layout_background">
+                android:elevation="3dp">
 <!--                android:backgroundTint="@android:color/transparent"-->
 <!--                app:boxStrokeColor="@color/light_gray"-->
 <!--                app:boxStrokeWidth="0dp"-->
@@ -132,17 +131,18 @@
                 android:id="@+id/spinImportance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/milk"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:background="?attr/colorPrimary"/>
 
             <View
                 android:layout_width="match_parent"
-                android:background="@color/light_gray"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginHorizontal="15dp"
-                android:layout_height="1dp"/>
+                android:layout_marginHorizontal="16dp"
+                android:layout_height="0.5dp"
+                android:background="?attr/separatorViewColor"/>
+
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -164,11 +164,13 @@
                     android:id="@+id/deadlineTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="?attr/colorSecondary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/TextViewMakeUp"
                     android:layout_marginBottom="5dp"
-                    android:textColor="@color/blue"/>
+                    style="@style/SubheadTextSize"/>
+<!--                android:textColor="@color/blue"/-->
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/set_deadline"
@@ -181,20 +183,20 @@
 
             <View
                 android:layout_width="match_parent"
-                android:background="@color/light_gray"
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="20dp"
-                android:layout_height="1dp"/>
+                android:layout_height="0.5dp"
+                android:background="?attr/separatorViewColor"/>
 
             <Button
                 android:id="@+id/deleteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Удалить"
-                android:textColor="@color/red"
                 android:textStyle="bold"
                 android:drawableLeft="@drawable/ic_baseline_delete_24"
                 style="?android:attr/borderlessButtonStyle"/>
+<!--            android:textColor="@color/red"-->
 
         </LinearLayout>
 

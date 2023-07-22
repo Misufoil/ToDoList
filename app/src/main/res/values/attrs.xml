@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="separatorViewColor" format="color" />
+    <attr name="recyclerviewItemBackgroundColor" format="color" />
+    <attr name="recyclerviewBackgroundColor" format="color" />
+    <attr name="green" format="color" />
+    <attr name="red" format="color" />
+    <attr name="labelTertiary" format="color" />
+    <attr name="lowIconPriority" format="color" />
+    <attr name="disableStatus" format="color" />
+</resources>

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="?attr/recyclerviewItemBackgroundColor">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -33,26 +34,29 @@
 
         <TextView
             android:id="@+id/textView"
-            style="@style/MyBodyText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="3"
+            android:textColor="?attr/colorOnPrimary"
             app:layout_constrainedHeight="true"
             app:layout_constraintBaseline_toBaselineOf="@+id/checkBox"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView"
             app:layout_constraintStart_toEndOf="@+id/priorityImage"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/MyBodyText"/>
 
         <TextView
             android:id="@+id/deadlineTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:textColor="?attr/labelTertiary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/textView"
-            app:layout_constraintTop_toBottomOf="@id/textView" />
+            app:layout_constraintTop_toBottomOf="@id/textView"
+            style="@style/SubheadTextSize"/>
 
         <ImageView
             android:id="@+id/imageView"

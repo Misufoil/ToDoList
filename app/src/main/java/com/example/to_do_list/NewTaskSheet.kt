@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -12,7 +13,6 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import com.example.to_do_list.MainActivity.Companion.DELETE_RESULT_CODE
 import com.example.to_do_list.MainActivity.Companion.TODO_ITEM_ID_KEY
@@ -23,6 +23,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.example.to_do_list.model.TodoItem
 import com.example.to_do_list.model.toImportance
+import com.google.android.material.color.MaterialColors
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
@@ -58,11 +59,14 @@ class NewTaskSheet : AppCompatActivity() {
 
             binding.editDesc.setText(todoItem.desc)
             binding.deadlineTextView.text = todoItem.deadline
+
             val selectedPosition = todoItem.priority.ordinal
             spinner.setSelection(selectedPosition)
         } else {
             spinner.setSelection(0)
         }
+
+        setupDeleteButton()
 
         binding.topMaterialToolbarNewTask.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -132,9 +136,13 @@ class NewTaskSheet : AppCompatActivity() {
             val view = super.getView(position, convertView, parent)
             val textView = view.findViewById<TextView>(android.R.id.text1)
             if (position == selectedPosition) {
-                textView.setTextColor(ContextCompat.getColor(this.context, R.color.red))
+                textView.setTextColor(
+                    MaterialColors.getColor(this.context, R.attr.red,
+                        Color.RED))
             } else {
-                textView.setTextColor(ContextCompat.getColor(this.context, R.color.black))
+                textView.setTextColor(
+                    MaterialColors.getColor(this.context, com.google.android.material.R.attr.colorOnPrimary
+                        , Color.BLACK))
             }
             return view
         }
@@ -145,9 +153,13 @@ class NewTaskSheet : AppCompatActivity() {
 
             // устанавливаем цвет текста для определенной строки
             if (position == selectedPosition) {
-                textView.setTextColor(ContextCompat.getColor(this.context, R.color.red))
+                textView.setTextColor(
+                    MaterialColors.getColor(this.context, R.attr.red,
+                        Color.RED))
             } else {
-                textView.setTextColor(ContextCompat.getColor(this.context, R.color.black))
+                textView.setTextColor(
+                    MaterialColors.getColor(this.context, com.google.android.material.R.attr.colorOnPrimary
+                        , Color.BLACK))
             }
             return view
         }
@@ -206,5 +218,21 @@ class NewTaskSheet : AppCompatActivity() {
                 animator.reverse()
             }
         }
+    }
+
+    private fun setupDeleteButton(){
+        var color = 0
+
+        if (isEditMode) {
+            binding.deleteButton.isEnabled = true
+            color = MaterialColors.getColor(this, R.attr.red, Color.RED)
+
+        } else {
+            binding.deleteButton.isEnabled = false
+            color = MaterialColors.getColor(this, R.attr.disableStatus, Color.GRAY)
+        }
+
+        binding.deleteButton.setTextColor(color)
+        binding.deleteButton.compoundDrawables[0].setTint(color)
     }
 }

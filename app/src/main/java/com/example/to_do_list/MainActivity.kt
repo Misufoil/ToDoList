@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadTodoItems() {
-        val json = sharedPreferences.getString("todo_items", null)
+        val json = sharedPreferences.getString(KEY, null)
         if (json != null) {
             TodoItemsRepository.fromJson(json)
         }
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
     private fun saveTodoItems() {
         TodoItemsRepository.updateTodoItems(taskAdapter.getAllTodoItems())
         val json = TodoItemsRepository.toJson()
-        sharedPreferences.edit().putString("todo_items", json).apply()
+        sharedPreferences.edit().putString(KEY, json).apply()
     }
 
     override fun onDestroy() {
@@ -163,5 +163,6 @@ class MainActivity : AppCompatActivity() {
         const val TODO_ITEM_ID_KEY = "todo_item_id"
         const val DELETE_RESULT_CODE = 2
         const val TODO_ITEM_KEY = "TODO_ITEM"
+        const val KEY = "todo_items"
     }
 }

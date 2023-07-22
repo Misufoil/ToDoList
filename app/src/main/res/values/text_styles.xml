@@ -15,7 +15,6 @@
 
     <style name="MyBodyText" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">16sp</item>
-        <item name="android:color">@color/black</item>
     </style>
 
     <style name="TitleTextSize">

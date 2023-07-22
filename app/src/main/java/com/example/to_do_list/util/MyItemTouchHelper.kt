@@ -3,10 +3,12 @@ package com.example.to_do_list.util
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import androidx.core.content.ContextCompat
+import android.graphics.Color.red
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.to_do_list.R
 import com.example.to_do_list.adapters.DefaultViewHolder
+import com.google.android.material.color.MaterialColors
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 
@@ -31,7 +33,7 @@ class MyItemTouchHelper(private val mAdapter: ItemTouchHelperAdapter, private va
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
         viewHolder.itemView.setBackgroundColor(
-            ContextCompat.getColor(viewHolder.itemView.context, com.example.to_do_list.R.color.white)
+            MaterialColors.getColor(context, R.attr.recyclerviewItemBackgroundColor,Color.WHITE)
         )
     }
 
@@ -80,10 +82,10 @@ class MyItemTouchHelper(private val mAdapter: ItemTouchHelperAdapter, private va
             actionState,
             isCurrentlyActive
         )
-            .addSwipeLeftBackgroundColor(context.getColor(com.example.to_do_list.R.color.red))
-            .addSwipeLeftActionIcon(com.example.to_do_list.R.drawable.ic_baseline_delete_white_24)
-            .addSwipeRightActionIcon(com.example.to_do_list.R.drawable.ic_baseline_check_24)
-            .addSwipeRightBackgroundColor(context.getColor(com.example.to_do_list.R.color.green))
+            .addSwipeLeftBackgroundColor(MaterialColors.getColor(context, R.attr.red,Color.RED))
+            .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_white_24)
+            .addSwipeRightActionIcon(R.drawable.ic_baseline_check_24)
+            .addSwipeRightBackgroundColor(MaterialColors.getColor(context, R.attr.green ,Color.GREEN))
             .create()
             .decorate()
 

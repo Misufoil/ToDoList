@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:layout_marginTop="10dp"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="?attr/recyclerviewItemBackgroundColor">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -40,15 +41,16 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="3"
-            android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textColor="?attr/labelTertiary"
             android:hint="Новое"
             app:layout_constrainedHeight="true"
             app:layout_constraintBaseline_toBaselineOf="@+id/checkBox2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView2"
             app:layout_constraintStart_toEndOf="@+id/priorityImage1"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/MyBodyText"/>
+<!--        android:textColor="@color/black"-->
 
 
         <ImageView

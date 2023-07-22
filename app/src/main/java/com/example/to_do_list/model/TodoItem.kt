@@ -13,15 +13,15 @@ data class TodoItem (
     var isDone: Boolean = false,
     val createdAt: LocalDate = LocalDate.now(),
     var modifiedDate: LocalDate?
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readValue(UUID::class.java.classLoader) as UUID,
-        parcel.readString()!!,
-        Importance.valueOf(parcel.readString()!!),
-        parcel.readString(),
-        parcel.readByte() != 0.toByte(),
-        LocalDate.ofEpochDay(parcel.readLong()),
-        parcel.readString()?.let { LocalDate.parse(it) }
+    parcel.readValue(UUID::class.java.classLoader) as UUID,
+    parcel.readString()!!,
+    Importance.valueOf(parcel.readString()!!),
+    parcel.readString(),
+    parcel.readByte() != 0.toByte(),
+    LocalDate.ofEpochDay(parcel.readLong()),
+    parcel.readString()?.let { LocalDate.parse(it) }
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

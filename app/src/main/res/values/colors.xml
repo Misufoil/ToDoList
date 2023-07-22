@@ -1,19 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Светлая тема -->
+    <color name="support_light_separator">#33000000</color>
+    <color name="support_light_overlay">#F0000000</color>
 
-    <color name="milk">#F7F6F2</color>
-    <color name="light_gray">#D1D1D6</color>
-    <color name="gray">#8E8E93</color>
-    <color name="disable">#26000000</color>
+    <color name="label_light_primary">#FF000000</color>
+    <color name="label_light_secondary">#99000000</color>
+    <color name="label_light_tertiary">#4D000000</color>
+    <color name="label_light_disable">#26000000</color>
 
-    <color name="blue">#007AFF</color>
-    <color name="red">#FF3B30</color>
-    <color name="green">#34C759</color>
+    <color name="color_light_red">#FF3B30</color>
+    <color name="color_light_green">#34C759</color>
+    <color name="color_light_blue">#007AFF</color>
+    <color name="color_light_gray">#8E8E93</color>
+
+    <color name="back_light_primary">#F7F6F2</color>
+    <color name="back_light_secondary">#FFFFFF</color>
+    <color name="back_light_elevated">#FFFFFF</color>
+
+    <!-- Темная тема -->
+    <color name="support_dark_separator">#33FFFFFF</color>
+    <color name="support_dark_overlay">#52000000</color>
+
+    <color name="label_dark_primary">#FFFFFFFF</color>
+    <color name="label_dark_secondary">#99FFFFFF</color>
+    <color name="label_dark_tertiary">#66FFFFFF</color>
+    <color name="label_dark_disable">#26FFFFFF</color>
+
+    <color name="color_dark_red">#FF453A</color>
+    <color name="color_dark_green">#32D74B</color>
+    <color name="color_dark_blue">#0A84FF</color>
+    <color name="color_dark_gray">#8E8E93</color>
+    <color name="color_dark_gray_light">#48484A</color>
+    <color name="color_dark_white">#FFFFFF</color>
+
+    <color name="back_dark_primary">#161618</color>
+    <color name="back_dark_secondary">#252528</color>
+    <color name="back_dark_elevated">#3C3C3F</color>
+
 </resources>
+
+
+<!--    Палитра — светлая тема-->
+
+<!--    Support [Light] / Separator-->
+<!--    #000000-->
+<!--    20 %-->
+
+<!--    Support [Light] / Overlay-->
+<!--    #000000-->
+<!--    6 %-->
+
+<!--    Label [Light] / Primary-->
+<!--    #000000-->
+
+<!--    Label [Light] / Secondary-->
+<!--    #000000-->
+<!--    60 %-->
+
+<!--    Label [Light] / Tertiary-->
+<!--    #000000-->
+<!--    30 %-->
+
+<!--    Label [Light] / Disable-->
+<!--    #000000-->
+<!--    15 %-->
+
+<!--    Color [Light] / Red-->
+<!--    #FF3B30-->
+
+<!--    Color [Light] / Green-->
+<!--    #34C759-->
+
+<!--    Color [Light] / Blue-->
+<!--    #007AFF-->
+
+<!--    Color [Light] / Gray-->
+<!--    #8E8E93-->
+
+<!--    Back [Light] / Primary-->
+<!--    #F7F6F2-->
+
+<!--    Back [Light] / Secondary-->
+<!--    #FFFFFF-->
+
+<!--    Back [Light] / Elevated-->
+<!--    #FFFFFF-->
+
+<!--    Палитра — тёмная тема-->
+
+<!--    Support [Dark] / Separator-->
+<!--    #FFFFFF-->
+<!--    20 %-->
+
+<!--    Support [Dark] / Overlay-->
+<!--    #000000-->
+<!--    32 %-->
+
+<!--    Label [Dark] / Primary-->
+<!--    #FFFFFF-->
+
+<!--    Label [Dark] / Secondary-->
+<!--    #FFFFFF-->
+<!--    60 %-->
+
+<!--    Label [Dark] / Tertiary-->
+<!--    #FFFFFF-->
+<!--    40 %-->
+
+<!--    Label [Dark] / Disable-->
+<!--    #FFFFFF-->
+<!--    15 %-->
+
+<!--    Color [Dark] / Red-->
+<!--    #FF453A-->
+
+<!--    Color [Dark] / Green-->
+<!--    #32D74B-->
+
+<!--    Color [Dark] / Blue-->
+<!--    #0A84FF-->
+
+<!--    Color [Dark] / Gray-->
+<!--    #8E8E93-->
+
+<!--    Back [Dark] / Primary-->
+<!--    #161618-->
+
+<!--    Back [Dark] / Secondary-->
+<!--    #252528-->
+
+<!--    Back [Dark] / Elevated-->
+<!--    #3C3C3F-->
+

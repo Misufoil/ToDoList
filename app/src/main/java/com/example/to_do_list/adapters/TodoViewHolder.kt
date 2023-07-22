@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.Color.red
 import android.graphics.Paint
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -18,6 +20,7 @@ import com.example.to_do_list.R
 import com.example.to_do_list.databinding.TaskItemCellBinding
 import com.example.to_do_list.model.Importance
 import com.example.to_do_list.model.TodoItem
+import com.google.android.material.color.MaterialColors
 import java.time.LocalDate
 
 class TodoViewHolder(
@@ -41,22 +44,22 @@ class TodoViewHolder(
             Importance.HIGH -> {
                 binding.priorityImage.visibility = View.VISIBLE
                 binding.priorityImage.setImageResource(R.drawable.ic_baseline_priority_high_24)
-                setCheckBoxColor(ContextCompat.getColor(itemView.context, R.color.red))
+                setCheckBoxColor(MaterialColors.getColor(itemView.context, R.attr.red,Color.RED))
             }
             Importance.LOW -> {
                 binding.priorityImage.visibility = View.VISIBLE
                 binding.priorityImage.setImageResource(R.drawable.ic_baseline_south_24)
-                setCheckBoxColor(ContextCompat.getColor(itemView.context, R.color.light_gray))
+                setCheckBoxColor(MaterialColors.getColor(itemView.context, R.attr.separatorViewColor,Color.GRAY))
             }
             else -> {
                 binding.priorityImage.visibility = View.GONE
-                setCheckBoxColor(ContextCompat.getColor(itemView.context, R.color.light_gray))
+                setCheckBoxColor(MaterialColors.getColor(itemView.context, R.attr.separatorViewColor,Color.GRAY))
             }
         }
 
         if (item.isDone) {
             setStrikeThroughText(true)
-            setCheckBoxColor(ContextCompat.getColor(itemView.context, R.color.green))
+            setCheckBoxColor(MaterialColors.getColor(itemView.context, R.attr.green,Color.GREEN))
             binding.checkBox.isChecked = true
 
         } else {
@@ -74,19 +77,18 @@ class TodoViewHolder(
         if (isStrikeThrough) {
             binding.textView.paintFlags =
                 binding.textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+
             binding.textView.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    android.R.color.darker_gray
-                )
+                MaterialColors.getColor(itemView.context, R.attr.labelTertiary, Color.GRAY)
             )
         } else {
             binding.textView.paintFlags =
                 binding.textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             binding.textView.setTextColor(
-                ContextCompat.getColor(
+                MaterialColors.getColor(
                     itemView.context,
-                    android.R.color.black
+                    com.google.android.material.R.attr.colorOnPrimary,
+                    Color.BLACK
                 )
             )
         }
