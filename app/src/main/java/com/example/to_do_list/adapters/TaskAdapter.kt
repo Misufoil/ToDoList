@@ -82,7 +82,6 @@ class TaskAdapter(
                     .setAction("Отменить") {
                         deleteItem.let {
                             addTodoItem(deleteItem, position)
-                            completedTodoItems++
                             setCompletedText()
                             saveTodoItems()
                         }
@@ -143,12 +142,18 @@ class TaskAdapter(
 
     fun addTodoItem(todoItem: TodoItem, position: Int = 0) {
         todoItems.add(position, todoItem)
+        if (todoItem.isDone){
+            completedTodoItems++
+        }
         notifyItemInserted(position)
     }
 
     fun deleteTodoItem(position: Int) {
+        if(todoItems[position].isDone) {
+            completedTodoItems--
+        }
+
         todoItems.removeAt(position)
-        completedTodoItems--
         setCompletedText()
         notifyItemRemoved(position)
     }

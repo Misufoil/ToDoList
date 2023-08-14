@@ -19,7 +19,6 @@
         <item name="colorOnSurface">@color/label_dark_primary</item>
 
 
-
         <item name="separatorViewColor">@color/support_dark_separator</item>
 
         <item name="recyclerviewItemBackgroundColor">@color/back_dark_secondary</item>

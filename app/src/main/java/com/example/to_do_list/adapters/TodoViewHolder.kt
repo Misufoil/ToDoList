@@ -5,17 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.Color.red
 import android.graphics.Paint
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.widget.CompoundButtonCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.to_do_list.MainActivity
-import com.example.to_do_list.NewTaskSheet
+import com.example.to_do_list.NewTask
 import com.example.to_do_list.R
 import com.example.to_do_list.databinding.TaskItemCellBinding
 import com.example.to_do_list.model.Importance
@@ -119,7 +117,7 @@ class TodoViewHolder(
     }
 
     private fun createIntent(context: Context, todoItem: TodoItem): Intent {
-        val intent = Intent(context, NewTaskSheet::class.java)
+        val intent = Intent(context, NewTask::class.java)
         todoItem.modifiedDate = LocalDate.now()
         intent.putExtra(MainActivity.TODO_ITEM_KEY, todoItem)
         return intent

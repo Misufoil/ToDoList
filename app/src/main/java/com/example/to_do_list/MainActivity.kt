@@ -4,10 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,16 +42,16 @@ class MainActivity : AppCompatActivity() {
     private fun setupView() {
         binding.newTaskButton.setOnClickListener {
             val newTask: TodoItem? = null
-            val intent = Intent(this, NewTaskSheet::class.java)
+            val intent = Intent(this, NewTask::class.java)
             intent.putExtra(TODO_ITEM_KEY, newTask)
             newTaskLauncher.launch(intent)
         }
 
-        var isIconVisible  = true
+        var isIconVisible = true
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.app_bar_visibility -> {
-                    isIconVisible  = if (isIconVisible ) {
+                    isIconVisible = if (isIconVisible) {
                         menuItem.setIcon(R.drawable.ic_baseline_visibility_off_24)
                         false
                     } else {
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         taskAdapter = TaskAdapter(recyclerView, binding.completedTodoItemsTextView)
 
         val callback: ItemTouchHelper.Callback = MyItemTouchHelper(taskAdapter, this)
-        val itemTouchHelper: ItemTouchHelper = ItemTouchHelper(callback)
+        val itemTouchHelper = ItemTouchHelper(callback)
         taskAdapter.setTouchHelper(itemTouchHelper)
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     result.data?.getParcelableExtra(TODO_ITEM_KEY)
                 }
+
                 if (item != null) {
                     if (taskAdapter.idInTodoItems(item.id)) {
                         taskAdapter.updateTodoItem(item)
@@ -130,7 +131,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             saveTodoItems()// Сохранение данных после добавления/обновления задачи
-
         }
     }
 
@@ -139,7 +139,10 @@ class MainActivity : AppCompatActivity() {
         if (json != null) {
             TodoItemsRepository.fromJson(json)
         }
-        taskAdapter.setData(TodoItemsRepository.getAllTodoItems(), TodoItemsRepository.getAmountCompletedTodoItems())
+        taskAdapter.setData(
+            TodoItemsRepository.getAllTodoItems(),
+            TodoItemsRepository.getAmountCompletedTodoItems()
+        )
     }
 
     private fun updateCompletedText() {
